@@ -1,0 +1,223 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimplePlusAIC}
+
+\usepackage{hyperref}
+\usepackage{csquotes}
+\newcommand{\code}[1]{\texttt{#1}}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and  \bottomrule in tables
+\usepackage{svg} %allows using svg figures
+\usepackage{tikz}
+\usepackage{makecell}
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+
+%Select the Epilogue font (requires luaLatex or XeLaTex compilers)
+\usepackage{fontspec}
+\setsansfont{Epilogue}[
+    Path=./epilogueFont/,
+    Scale=0.9,
+    Extension = .ttf,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic
+    ]
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Num. Simulation of Ice Crystal Traj. \& Frag. Dyn.]{Numerical Simulation of Ice Crystal Trajectories and Fragmentation Dynamics Around the XRF1 Fuselage Nose} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{Author: Moussa Diop, Tristan Soubrie, Julien Cliquet, Jean-Mathieu, and Phillippe Villedieu}
+
+\author[Ivan L. Ihwani]{Presented by: Ivan L. Ihwani}
+\institute[SIAM NEWS SEPTEMBER 2023]{Department of Mathematics \newline National Central University}
+% Your institution as it will appear on the bottom of every slide, maybe shorthand to save space
+
+
+\date{September 21, 2023} % Date, can be changed to a custom date
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}[plain]
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+
+\begin{frame}{Overview}
+    % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+    \tableofcontents
+\end{frame}
+
+%------------------------------------------------
+\section{Introduction}
+%------------------------------------------------
+\begin{frame}{Introduction}
+Why this simulation is so important?
+    \begin{itemize}
+    \item Icing on airplane surfaces often causes a considerable reduction in aerodynamic performance, significant unsteady flow, inconsistent probe measurement, sudden loss of engine thrust, and engine flame out. 
+    \item Several aircraft incidents and dramatic accidents that pertain to ice accretion have been recorded since the onset of aviation. 
+    \end{itemize}
+Water droplets that freeze on solid airplane surfaces typically cause icing. 
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Introduction}
+    \begin{itemize}
+    \item The ice crystal icing (ICI) has garnered significant research interest in recent years. 
+    \item Given the challenge of assessing ICI in ground testing while also meeting flight conditions, the development of the simulation tools is of significant importance.
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+\section{Simulation Tool}
+
+\begin{frame}{Simulation Tool}
+    \begin{itemize}
+        \item The authors employ a tool, called \href{https://aerospacelab.onera.fr/CEDRE-Software}{\textcolor{blue}{CEDRE}}, in this study. It is a multiphysics CFD code. 
+        \item Two solvers are utilized:
+        \begin{enumerate}
+            \item \textcolor{red}{CHARME}, to simulate the aerodynamic flow field.
+            \item \textcolor{red}{SPARTE}, to predict the ice particle trajectories within a Lagrangian approach. 
+        \end{enumerate}
+        \item This study transpires in a sequential manner, first with CHARME and then SPARTE. 
+    \end{itemize}
+\end{frame}
+
+%--------------------------------------------------------------------------
+
+\begin{frame}{CHARME: Gas Solver}
+    \begin{itemize}
+        \item The CHARME solver is used to compute the flow field by solving the Reynolds-averaged Navier-Stokes (RANS) for a gas mixture of two species: air and water vapor. 
+        \item Specifically, the authors use \textcolor{blue}{Florian Menter's $k-\omega$ turbulence model} with shear stress transport (SST) correction and perform the time integration with an \textcolor{blue}{implicit first-order Euler scheme}. 
+        \item Then carry out the flux calculation with a \textcolor{blue}{second-order monotonic upwind scheme} for the conservation law method and a \textcolor{blue}{Harten-Lax-van Leer contact flux scheme}. 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{CHARME: Gas Solver}
+    \begin{itemize}
+        \item A symmetry plane (XZ) reduces the computational domain to half of the geometry, after which we perform steady computations. The time step was $0.01$ seconds.
+    \end{itemize}
+\end{frame}
+
+
+%----------------------------------------------------------------------
+
+\begin{frame}{SPARTE: Lagrangian Particle Solver}
+   \begin{itemize}
+       \item 
+   \end{itemize}
+\end{frame}
+
+
+
+%------------------------------------------------
+
+
+
+%------------------------------------------------
+\section{Other Examples}
+
+
+%------------------------------------------------
+\begin{frame}{Other Examples}
+    \begin{itemize}
+        \item \textcolor{brown}{\href{https://github.com/micjoswig/oscar-notebooks/blob/master/SIAM-News/Hurwitz_Combinatorics.ipynb}{Combinatorics of Hurwitz Numbers}}, tackle problems in enumerative algebraic geometry both in a combinatorial and algorithmic manner.
+        \item \textcolor{brown}{\href{https://github.com/micjoswig/oscar-notebooks/blob/master/SIAM-News/Cox_rings_of_blow_ups_of_points.ipynb}{Cox Rings of Point Blow-ups}}, the problem in a geometry of varieties.
+        \item \textcolor{brown}{\href{https://github.com/micjoswig/oscar-notebooks/blob/master/SIAM-News/Cox_rings_of_linear_quotients.ipynb}{Cox Rings of Linear Quotients}}, tackle a problem invariant theory field. 
+        
+    \end{itemize}
+\end{frame}
+
+
+\section{Installation}
+
+\begin{frame}{Installation}
+    \Huge{\centerline{\textbf{See The \href{https://www.oscar-system.org/}{Documentation}}}}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}{References}
+    % Beamer does not support BibTeX so references must be inserted manually as below
+    \footnotesize{
+        \begin{thebibliography}{99}
+            \bibitem[Agostini A., Markwig, H., Noliau, C., Schleis, V., Sendra-Arranz, J., Sturmfels, B., 2022]{p1} Agostini A., Markwig, H., Noliau, C., Schleis, V., Sendra-Arranz, J., \& Sturmfels, B. (2022)
+            \newblock Recovery of plane curves from branch points
+            \newblock \emph{Preprint,} arXiv:2205.11287.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Arzhantsev, I.V., \& Gaĭfullin, S.A., 2010]{p1} Arzhantsev, I.V., \& Gaĭfullin, S.A. (2010)
+            \newblock Cox rings, semigroups and automorphisms of affine varieties
+            \newblock \emph{Math. Sbornik,} 201(1), 3-24.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Belotti, M., \& Panizzut, M., 2022]{p1} Belotti, M., \& Panizzut, M. (2022)
+            \newblock Discrete geometry of Cox rings of blow-ups of $\mathbb{R}^3$
+            \newblock \emph{Preprint,} arXiv:2208.05258.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Berlow, K., Brandenburg, M.-C., Meroni, C., \& Shankar, I., 2022]{p1} Berlow, K., Brandenburg, M.-C., Meroni, C., \& Shankar, I. (2022)
+            \newblock  Intersection bodies of polytopes
+            \newblock \emph{Beitr. Algebra Geom.,} 63, 419-439.
+        \end{thebibliography}
+    }
+\end{frame}
+
+\begin{frame}{References}
+    % Beamer does not support BibTeX so references must be inserted manually as below
+    \footnotesize{
+        \begin{thebibliography}{99}
+            \bibitem[Breiding, P., \& Timme, S., 2018]{p1} Breiding, P., \& Timme, S. (2018)
+            \newblock HomotopyContinuation.jl: A package for homotopy continuation in Julia
+            \newblock \emph{Mathematical software – ICMS 2018,} pp. 458-465.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Decker, W., Eder, C., Fieker, C., Horn, M., \& Joswig, M., 2024]{p1} Decker, W., Eder, C., Fieker, C., Horn, M., \& Joswig, M. (2024)
+            \newblock The OSCAR book
+            \newblock \emph{To be published} .
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Fieker, C., Hofmann, T., \& Joswig, M., 2022]{p1} Fieker, C., Hofmann, T., \& Joswig, M. (2022)
+            \newblock Computing Galois groups of Ehrhart polynomials in OSCAR
+            \newblock \emph{Sém. Lothar. Combin.,} 86B, 87.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[ Gardner, R.J., Koldobsky, A., \& Schlumprecht, T., 2022]{p1}  Gardner, R.J., Koldobsky, A., \& Schlumprecht, T. (2022)
+            \newblock An analytic solution to the Busemann-Petty problem on sections of convex bodies
+            \newblock \emph{Ann. Math.,} 149(2), 691-703.
+        \end{thebibliography}
+    }
+\end{frame}
+
+\begin{frame}{References}
+    % Beamer does not support BibTeX so references must be inserted manually as below
+    \footnotesize{
+        \begin{thebibliography}{99}
+            \bibitem[ Klartag, B., \& Milman, V., 2022]{p1}  Klartag, B., \& Milman, V. (2022)
+            \newblock The slicing problem by Bourgain.  In A. Avila, M.T. Rassias, \& Y. Sinai (Eds.)
+            \newblock \emph{Analysis at large: Dedicated to the life and work of Jean Bourgain,} (pp. 203-231). Cham, Switzerland: Springer Cham.
+        \end{thebibliography}
+        \begin{thebibliography}{99}
+            \bibitem[Knuth, D.E., 1984]{p1} Knuth, D.E. (1984)
+            \newblock  Literate programming
+            \newblock \emph{Comp. J.,} 27(2), 97-111.
+        \end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \Huge{\centerline{\textbf{Thank You}}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\end{document}
