@@ -16,6 +16,20 @@
 
 %Select the Epilogue font (requires luaLatex or XeLaTex compilers)
 \usepackage{fontspec}
+\usepackage{listings}
+\usepackage{matlab-prettifier}
+
+% Define MATLAB code style
+\lstset{
+  style=Matlab-editor,
+  basicstyle=\ttfamily\scriptsize,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  breaklines=true,
+}
+
+
 \setsansfont{Epilogue}[
     Path=./epilogueFont/,
     Scale=0.9,
@@ -127,12 +141,73 @@ An equivalent way to think about the proposed rank-$k$ approximation:
 \end{figure}
 \end{frame}
 
-%--------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\begin{frame}{Example 1}
+$A = \begin{bmatrix}
+    1 & 1\\ 2 & 2
+\end{bmatrix}$, where $n=m=2$ and rank$(A)=1$.\\
+$A^{T} A = \begin{bmatrix}
+    5 & 5\\ 5 & 5
+\end{bmatrix}$ and det$\left( \begin{bmatrix}
+    5-\lambda & 5\\ 5 & 5-\lambda
+\end{bmatrix}\right) = 0$ implies $\lambda_1=10$, $\sigma_1=\sqrt{10}$, and $\lambda_2=0$, $\sigma_2 =0$.\\
+The first eigenvectors are
+\begin{align*}
+    \textbf{v}_1 &= \begin{bmatrix}
+        1 / \sqrt{2}\\
+        1/\sqrt{2}
+    \end{bmatrix}\, \quad\text{and}\\
+    \textbf{u}_1 &= \frac{A \textbf{v}_1}{\sigma_1} = \begin{bmatrix}
+        1 / \sqrt{5} \\ 2 / \sqrt{5}
+    \end{bmatrix} .
+\end{align*}
+This gives a \enquote{small} (or rank-1 SVD) 
+\begin{align*}
+    \textbf{u}_1 \sigma_1 \textbf{v}^{T}_1 = \begin{bmatrix}
+        1 / \sqrt{5} \\ 2 / \sqrt{5} 
+    \end{bmatrix} \sqrt{10} \begin{bmatrix}
+        1 / \sqrt{2} & 1/ \sqrt{2}
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 1\\ 2 & 2
+    \end{bmatrix} .
+\end{align*}
+\end{frame}
+
+\begin{frame}{Example 1 (Continuation)}
+    The \enquote{full} SVD uses the $\textbf{v}_2$ basis for $N (A)$: $\textbf{v}_2 = \begin{bmatrix}
+        1 / \sqrt{2} \\ -1 / \sqrt{2}
+    \end{bmatrix}$ and the $\textbf{u}_2$ basis for $N(A^{T})$: $\textbf{u}_2 = \begin{bmatrix}
+        -2 / \sqrt{5}\\ 1/ \sqrt{5} 
+    \end{bmatrix}$.\\
+    \begin{align*}
+        U \Sigma V^{T} &= \begin{bmatrix}
+            \textbf{u}_1 & \textbf{u}_2
+        \end{bmatrix} \begin{bmatrix}
+            \sigma_1 & 0\\
+            0 & 0
+        \end{bmatrix} \begin{bmatrix}
+            \textbf{v}^{T}_1 \\ \textbf{v}^T_2
+        \end{bmatrix} \\
+        &= \begin{bmatrix}
+            1/\sqrt{5} & -2/\sqrt{5} \\
+            2/ \sqrt{5} & 1/\sqrt{5}
+        \end{bmatrix} \begin{bmatrix}
+            \sqrt{10} & 0\\
+            0 & 0
+        \end{bmatrix} \begin{bmatrix}
+            1/ \sqrt{2} & 1/ \sqrt{2}\\
+            1/ \sqrt{2} & -1/\sqrt{2}
+        \end{bmatrix}\\
+        &= \begin{bmatrix}
+            1 & 1\\ 2 & 2
+        \end{bmatrix}.
+    \end{align*}
+\end{frame}
 
 \begin{frame}{Fact}
-    This low-rank approximation is \textit{optimal} in a natural sense. The guarantee is in terms of the \enquote{Frobenius norm} of a matrix $M$, i.e. applying the $\ell_2$ norm to the matrix as if it were a vector: $\left\| M \right\|_F = \sqrt{\sum_{i,j} m^2_{ij}}$.\\
-    \vspace{1cm}
-    \textbf{Fact:} For every $m\times n$ matrix $A$, rank target $k\geq 1$, and rank-$k$ $m\times n$ matrix $B$,
+ %   This low-rank approximation is \textit{optimal} in a natural sense. The guarantee is in terms of the \enquote{Frobenius norm} of a matrix $M$, i.e. applying the $\ell_2$ norm to the matrix as if it were a vector: $\left\| M \right\|_F = \sqrt{\sum_{i,j} m^2_{ij}}$.\\
+%    \vspace{1cm}
+    For every $m\times n$ matrix $A$, rank target $k\geq 1$, and rank-$k$ $m\times n$ matrix $B$,
     \begin{equation}
         \label{eq:3}
         \left\| A - A_k\right\|_F \leq \left\| A- B\right\|_F ,
@@ -141,32 +216,8 @@ An equivalent way to think about the proposed rank-$k$ approximation:
 \end{frame}
 
 %--------------
-
-\begin{frame}{Remark 1: How to Choose $k$}
-\begin{itemize}
-    \item \textbf{In a perfect world:} if the top few such values are big and the rest are small, then the obvious solution is to take $k$ equal to the number of big values.
-    \item \textbf{In a less perfect world:} one takes $k$ as small as possible subject to obtaining a useful approximation.
-\end{itemize}
-\vspace{1cm}
-Rules of thumb: choose $k$ such that the sum of the top $k$ singular values is at least $c$ times as big as the sum of the other singular values, where $c$ is a domain-dependent constant (like
-10, say).
-\end{frame}
-
-
-\begin{frame}{Remark 2: Lossy Compression via Truncated Decomposition}
-Low-rank SVD is another example of a useful paradigm for lossy compression:
-   \begin{enumerate}
-       \item The 1st step of the paradigm is to re-express the raw data exactly as a decomposition into several terms.
-       \item The 2nd step is to throw away all but the \enquote{most important} terms to approximate the representation the raw data.
-   \end{enumerate}
-   \vspace{1cm}
-   Rule of thumb: messy enough data sets might not admit any nice representations at all.
-\end{frame}
-% ----------------------------------------------------
-%------------------------------------------------------
-
-\section{Application}
-\begin{frame}{Application}
+\begin{comment}
+\begin{frame}{Example 2}
    \begin{figure}[h]
 \includegraphics[width=8cm]{images/result1.png}
 \end{figure}
@@ -183,8 +234,61 @@ Low-rank SVD is another example of a useful paradigm for lossy compression:
 \includegraphics[width=7cm]{images/result3.png}
 \end{figure}
 \end{frame}
+\end{comment}
 
-\begin{frame}{Application: Image Compression}
+% ---------------------------
+\begin{frame}{Remark 1: How to Choose $k$}
+\begin{itemize}
+    \item \textbf{In a perfect world:} if the top few such values are big and the rest are small, then the obvious solution is to take $k$ equal to the number of big values.
+    \item \textbf{In a less perfect world:} one takes $k$ as small as possible subject to obtaining a useful approximation.
+\end{itemize}
+\vspace{1cm}
+Rules of thumb: choose $k$ such that the sum of the top $k$ singular values is at least $c$ times as big as the sum of the other singular values, where $c$ is a domain-dependent constant (like
+10, say).
+\end{frame}
+
+\begin{comment}
+\begin{frame}{Remark 2: Lossy Compression via Truncated Decomposition}
+Low-rank SVD is another example of a useful paradigm for lossy compression:
+   \begin{enumerate}
+       \item The 1st step of the paradigm is to re-express the raw data exactly as a decomposition into several terms.
+       \item The 2nd step is to throw away all but the \enquote{most important} terms to approximate the representation the raw data.
+   \end{enumerate}
+   \vspace{1cm}
+   Rule of thumb: messy enough data sets might not admit any nice representations at all.
+\end{frame}
+\end{comment}
+% ----------------------------------------------------
+\section{Applications}
+\begin{frame}[fragile]{Application 1: Image Compression}
+\begin{lstlisting}[language=Matlab]
+% Load image
+img = imread('image.jpg');
+img = double(rgb2gray(img)); % Convert to grayscale and double precision
+
+% Compute SVD
+[U, S, V] = svd(img);
+
+% Retain only k singular values
+k = 50; % You can adjust this value
+Uk = U(:, 1:k);
+Sk = S(1:k, 1:k);
+Vk = V(:, 1:k);
+
+% Reconstruct image
+compressed\_img = Uk * Sk * Vk';
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Application 1: Image Compression}
+   \begin{figure}[h]
+\includegraphics[width=7cm]{images/ori.eps}
+\includegraphics[width=7cm]{images/sv.eps}
+\label{Fig2a}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Application 1: Image Compression}
    \begin{figure}[h]
 \includegraphics[width=12cm]{images/svdlowrank.eps}
 \label{Fig2}
@@ -193,21 +297,85 @@ Low-rank SVD is another example of a useful paradigm for lossy compression:
 
 %-----------------------------------------------
 %------------------------------------------------
-\begin{frame}{Application}
- sd
+\begin{frame}{Application 2: Noise Filter}
+ Consider a discrete signal $f
+ \in \mathbb{R}^{n}$, some blurring ($K$ an $n\times n$ matrix), and some signal noise ($\eta \in \mathbb{R}^{n}$). The data received ($d\in \mathbb{R}^{n}$) is given by
+ \begin{equation}
+     d = K f + \eta .
+     \label{eq:4}
+ \end{equation}
+ The objective is to approximate $f$ from the data $d$. \\
+ %\textbf{There are two problems:} the noise is not known, and the matrix inversion tends to be sensitive to variations in the data.
+ The matrix $K$ has exponential components
+ \begin{equation*}
+     K = \left[ h Ce^{-((i-j)h)^2 / 2 \gamma^2 }\right] , \quad \text{with} \quad \, h=1/n .
+ \end{equation*}
+ It is nonsingular, but it has very small singular values, for example, $K$ has $\sigma_n = 4.2275 \times 10^{-7}$.
 \end{frame}
 
+\begin{frame}{Application 2: Noise Filter}
+    The SVD of $K=U\Sigma_n V^T$ (three $n\times n$ matrices) and $\sigma_i > 0$. Use the orthonormal properties to get
+    \begin{align*}
+        K^{-1} &= V \Sigma_n^{-1} U^T \quad \text{and}\\
+        K^{-1} d &= f + K^{-1} \eta \quad\text{(from \eqref{eq:4})}\\
+        V\left( \Sigma^{-1}_n U^T d\right) &= f + V \left( \Sigma^{-1}_n U^{T} \eta \right) .
+    \end{align*}
+   Since the noise vector $\eta$ has higher frequency components, one can drop some of the latter terms in the SVD, i.e. use the truncated SVD: $K^{(k)} = U^{(k)} \Sigma_k \left( V^{(k)}\right)^T$ with $k< \text{rank}(K) = n$. 
+\end{frame}
 
+\begin{frame}{Application 2: Noise Filter}
+    The computed signal is
+    \begin{align*}
+        \hat{f} &= V^{(k)} \left( \Sigma^{-1}_{k} \left( U^{(k)}\right)^T d \right)\\
+        &= \sum^{k}_{j=1} v_j \frac{1}{\sigma_j} u^T_j d \\
+        &= \sum^{k}_{j=1} \left( \frac{1}{\sigma_j} u^T_{j} d\right) v_j .
+    \end{align*}
+    Depending in the choice the truncation, the $\sigma_j$ may still be small s.t. variations in the data can cause large errors. 
+\end{frame}
 
-\section{Conclusions}
+\begin{frame}{Application 2: Noise Filter}
+    One possible remedy is to replace $\frac{1}{\sigma_j}$ by $\frac{1}{\sigma_j} \frac{\sigma^2_j}{\sigma^2_j + \alpha}$ where $\alpha>0$ (Truncated Tikhonov-Phillips regularization), that is
+    \begin{align*}
+        \tilde{f} &= \left( \left( K^{(k)}\right)^T K^{(k)} + \alpha I_k\right)^{-1} \left( K^{(k)}\right)^T d\\
+        &= \sum^{k}_{j=1} \left( \frac{\sigma_j}{\sigma^2_j + \alpha} u^T_j d \right) v_j .
+    \end{align*}
+    \textbf{Remark:} The selection of $\alpha > 0$ and $k<n$ can be subjective. 
+\end{frame}
 
-\begin{frame}{Conclusions}
-   \begin{itemize}
-       \item The study examines the numerical simulation of ice crystal particle trajectories and their fragmentation upon impacting a wall surface.
-       \item The authors assessed the \href{https://www.music-haic.eu/page/en/media-center/available-documentation.php}{\textcolor{blue}{MUSIC-haic fragmentation model}} in \href{https://www.onera.fr/en/site-index/computational-fluid-dynamics.html}{\textcolor{blue}{ONERA CFD software}} under real flight conditions around a fuselage nose.
-       \item Results show particle deposition on the fuselage and windshield, posing icing risk with ice crystal and supercooled water droplet mix or melted particles on heated surfaces.
-       \item The new model effectively captures fragmentation, assessing particle concentration near fuselage walls by considering the splitting and reinjection process.
-   \end{itemize}
+\begin{frame}{Application 2: Noise Filter}
+    \begin{itemize}
+        \item The matrix $K$ is $100\times 100$.
+        \item The singular values vary from largest to very very small, i.e. $\sigma_1 = 0.9985$, $\sigma_{40} = 0.0944$, and $\sigma_{100} = 4.2267\times 10^{-7}$.
+        \item The eigenvectors $u_j$ and $v_j$ have more oscillations as $j$ increases.
+    \end{itemize}
+      \begin{figure}[h]
+\includegraphics[width=11.5cm]{images/eigenvectors.eps}
+\label{Fig3}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Application 2: Noise Filter}
+     \begin{figure}[h]
+\includegraphics[width=13cm]{images/noisy_and_blurred.eps}
+\label{Fig4}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Other Application}
+    \begin{itemize}
+        \item Dynamical Low rank approximations for the time dependent PDEs scheme. See \textcolor{blue}{(Koch, O. and Lubich, C., 2007)} and \textcolor{blue}{(Lubich, C. and Oseledets, I. V., 2014)}.
+        \item  Implicit step-truncation integration of nonlinear PDEs on low-rank tensor manifolds. See \textcolor{blue}{(Rodgers, A. and Venturi, D., 2022)}.
+        \item  Hierarchical adaptive low-rank format with applications
+to discretized partial differential equations. See \textcolor{blue}{(Massei, S., Robol, L., and Kressner, D., 2022)}.
+\item Implicit low-rank Riemannian schemes for the time
+integration of stiff partial differential equations. See \textcolor{blue}{(Sutti, M. and Vandereycken, B., 2023)}.
+    \end{itemize}
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}{Summary}
+  Singular Value Decomposition (SVD) and low-rank approximations provide a powerful set of tools for deriving significant insights from matrices, facilitating data exploration and analysis in a wide range of disciplines.
 \end{frame}
 
 
